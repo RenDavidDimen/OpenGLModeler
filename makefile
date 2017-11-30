@@ -6,7 +6,7 @@
 #changing platform dependant stuff, do not change this
 # Linux (default)
 LDFLAGS = -lGL -lGLU -lglut
-CFLAGS=-g -Wall -std=c++11
+CFLAGS= -w -g -Wall -std=c++11 
 CC=g++
 EXEEXT=
 RM=rm
@@ -17,7 +17,7 @@ ifeq "$(OS)" "Windows_NT"
 	RM=del #rm command for windows powershell
     LDFLAGS = -lfreeglut -lglu32 -lopengl32
 else
-	# OS X
+# OS X
 	OS := $(shell uname)
 	ifeq ($(OS), Darwin)
 	        LDFLAGS = -framework Carbon -framework OpenGL -framework GLUT
@@ -25,18 +25,18 @@ else
 endif
 
 #change the 't1' name to the name you want to call your application
-PROGRAM_NAME= Modeller
+PROGRAM_NAME= modeler
 
 #run target to compile and build, and then launch the executable
 run: $(PROGRAM_NAME)
-	./$(PROGRAM_NAME)$(EXEEXT)
+	./$(PROGRAM_NAME)$(EXEXT)
 
 #when adding additional source files, such as boilerplateClass.cpp
 #or yourFile.cpp, add the filename with an object extension below
 #ie. boilerplateClass.o and yourFile.o
 #make will automatically know that the objectfile needs to be compiled
 #form a cpp source file and find it itself :)
-$(PROGRAM_NAME): Modeller.o 
+$(PROGRAM_NAME): modeler.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS)
 
 clean:
