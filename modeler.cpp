@@ -14,31 +14,10 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
 
-using namespace std;
-
-// Vertices
-float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1,0}, {1,0,0} };
-
-//	Colours
-// [0] Black
-// [1] White
-// [2] Red
-// [3] Orange
-// [4] Yellow
-// [5] Green
-// [6] Blue
-// [7] Purple
-float cols[9][3] = {{0,0,0}, {1,1,1}, {1,0,0}, {1,0.64,0}, {1,1,0}, {0,1,0}, {0,0,1}, {1,0,1}};
-float baseColours[3][3] = {{1,0.85,0.73}, {1, 0.89, 0.71}, {1, 0.94, 0.84}};
-
-float pos[] = {50,0,50};
-float rot[] = {0,0,0};
-float headRot[] = {0, 0, 0};
-
-float eye[] = {150,100,150};
-
+//	***************************
+//			Shape Class
+//	***************************
 class sceneObject
 {
 	private:
@@ -55,6 +34,7 @@ class sceneObject
 		int objMaterial;
 		
 		// 1: Cube 	2: Sphere  3: Teapot
+		// If shape is set to -1, class object is empty
 		int objShape;
 
 	public:
@@ -71,9 +51,9 @@ class sceneObject
 			objRotation[1] = 0;
 			objRotation[2] = 0;
 
-			objScale = 1;
+			objScale = 0.0f;
 			objMaterial = 1;
-			objShape = 1;
+			objShape = -1;
 		}
 
 		// 	********************************
@@ -81,19 +61,19 @@ class sceneObject
 		// 	********************************
 
 		// Update Position
-		void setPosition(float newPosition[3])
+		void setPosition(float newX, float newY, float newZ)
 		{
-			objPosition[0] = newPosition[0];
-			objPosition[1] = newPosition[1];
-			objPosition[2] = newPosition[2];
+			objPosition[0] = newX;
+			objPosition[1] = newY;
+			objPosition[2] = newZ;
 		}
 
 		// Update Rotation
-		void setRotation(float newRotation[3])
+		void setRotation(float newRotX, float newRotY, float newRotZ)
 		{
-			objRotation[0] = newRotation[0];
-			objRotation[1] = newRotation[1];
-			objRotation[2] = newRotation[2];
+			objRotation[0] = newRotX;
+			objRotation[1] = newRotY;
+			objRotation[2] = newRotZ;
 		}
 
 		// Update Scale
@@ -203,6 +183,35 @@ class sceneObject
 		}		
 };
 
+//	********************************
+//			Global Variables
+//	********************************
+
+// Vertices
+float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1,0}, {1,0,0} };
+
+//	Colours
+// [0] Black
+// [1] White
+// [2] Red
+// [3] Orange
+// [4] Yellow
+// [5] Green
+// [6] Blue
+// [7] Purple
+float cols[9][3] = {{0,0,0}, {1,1,1}, {1,0,0}, {1,0.64,0}, {1,1,0}, {0,1,0}, {0,0,1}, {1,0,1}};
+float baseColours[3][3] = {{1,0.85,0.73}, {1, 0.89, 0.71}, {1, 0.94, 0.84}};
+
+float pos[] = {50,0,50};
+float rot[] = {0,0,0};
+float headRot[] = {0, 0, 0};
+
+float eye[] = {150,100,150};
+
+int maxShapesNum = 20;
+
+sceneObject objectList[20];
+
 /* drawPolygon - takes 4 indices and an array of vertices
  *   and draws a polygon using the vertices indexed by the indices
  */
@@ -247,6 +256,45 @@ void drawScene()
 	drawGrid();
 }
 
+void drawObjects()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (int i = 0; i < maxShapesNum; i++){
+		if (objectList[i].getShape() < 1) {
+			objectList[i].draw();
+		}
+	}
+
+}
+
+void addObject(int newScale, int newShape){
+	//Loop through object array and look for an empty slot
+	for (int i = 0; i < maxShapesNum; i++){
+		if (objectList[i].getShape() < 1){
+
+			printf("\n--------   Adding Object   --------\n");
+			printf("Object list number:\t%i\n", i);
+			printf("New Scale:\t\t%i\n", newScale);
+			printf("New Shape:\t\t%i\n", newShape);
+			printf("--------   Old Paramters   --------\n");
+			printf("Object Position:\t(%f, %f, %f)\n", objectList[i].getPosX(), objectList[i].getPosY(), objectList[i].getPosZ());
+			printf("Object Scale:\t\t%i\n", objectList[i].getScale());
+			printf("Object Shape:\t\t%i\n", objectList[i].getShape());
+
+			objectList[i].setPosition(0, 0, 0);
+			objectList[i].setScale(newScale);
+			objectList[i].setShape(newShape);
+
+			printf("-------- Set New Paramters --------\n");
+			printf("Object Position:\t(%f, %f, %f)\n", objectList[i].getPosX(), objectList[i].getPosY(), objectList[i].getPosZ());
+			printf("Object Scale:\t\t%i\n", objectList[i].getScale());
+			printf("Object Shape:\t\t%i\n", objectList[i].getShape());
+			break;
+		}
+	}
+}
+
 void keyboard(unsigned char key, int x, int y)
 {
 	int i = 0;
@@ -260,6 +308,7 @@ void keyboard(unsigned char key, int x, int y)
 			exit (0);
 			break;
 		case '1':
+			addObject(1, 1);
 			printf("Creating Cube\n");
 			break;
 		case '2':
@@ -382,17 +431,6 @@ void DrawSnowman(float* pos, float* rot)
 	glPopMatrix();//snowman
 }
 
-void initializeObjectList(sceneObject object[])
-{
-	// Intialize Stucture Array
-	// for(int i = 0; i <10; i++)
-	// {
-	// 	object[i].objShape = 0;
-	// 	printf("Object Shape [%i]: %i\n", i,  object[i].objShape);
-	// }
-	// printf(object);
-}
-
 /* display function - GLUT display callback function
  *		clears the screen, sets the camera position, draws the ground plane and movable box
  */
@@ -413,9 +451,18 @@ void display(void)
 	gluLookAt(eye[0], eye[1], eye[2], 0, 0, 0, 0, 1, 0);
 
 	drawScene();
-	sceneObject objectList[10];
 
-	initializeObjectList(objectList);
+	// Used to check initalization of the array
+	printf("--------   Object 0   --------\n");
+	printf("Object Position:\t(%f, %f, %f)\n", objectList[0].getPosX(), objectList[0].getPosY(), objectList[0].getPosZ());
+	printf("Object Rotation:\t(%f, %f, %f)\n", objectList[0].getRotX(), objectList[0].getRotY(), objectList[0].getRotZ());
+	printf("Object Scale:\t\t%i\n", objectList[0].getScale());
+	printf("Object Shape:\t\t%i\n", objectList[0].getShape());
+	printf("--------   Object 1   --------\n");
+	printf("Object Position:\t(%f, %f, %f)\n", objectList[2].getPosX(), objectList[2].getPosY(), objectList[2].getPosZ());
+	printf("Object Rotation:\t(%f, %f, %f)\n", objectList[2].getRotX(), objectList[2].getRotY(), objectList[2].getRotZ());
+	printf("Object Scale:\t\t%i\n", objectList[2].getScale());
+	printf("Object Shape:\t\t%i\n", objectList[2].getShape());
 
 	DrawSnowman(pos, rot);
 	
