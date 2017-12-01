@@ -163,7 +163,7 @@ class sceneObject
 			glPushMatrix();
 
 			// Position
-			glTranslatef(objPosition[0], yPos, objPosition[2]);
+			glTranslatef(objPosition[0], objPosition[1], objPosition[2]);
 			
 			// Rotation
 			glRotatef(objRotation[0], 1, 0, 0);
