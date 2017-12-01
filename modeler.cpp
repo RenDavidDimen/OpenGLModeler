@@ -155,16 +155,10 @@ class sceneObject
 
 		void draw()
 		{
-			float yPos = 0;
-
-			if(objShape == 1 && objPosition[1]-(0.5 * objScale) < 0)
+			/*if(objPosition[1]-(0.5 * objScale) < 0)
 			{
-				yPos = 0.5 * objScale;
-			}
-			else //if(objShape == 2 || objShape == 2 && objPosition[1] - objScale < 0)
-			{
-				yPos = objScale;
-			}
+				objPosition[1] = objScale;
+			}*/
 
 			glPushMatrix();
 
