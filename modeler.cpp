@@ -292,7 +292,7 @@ void addObject(int newScale, int newShape){
 	//Loop through object array and look for an empty slot
 	for (int i = 0; i < maxShapesNum; i++){
 		if (objectList[i].getShape() < 1){
-			objectList[i].setPosition(0, 0, 0);
+			objectList[i].setPosition(0, 10, 0);
 			objectList[i].setScale(newScale);
 			objectList[i].setShape(newShape);
 			selectedObject = i;
