@@ -14,7 +14,6 @@
 #endif
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <math.h>
 
 
@@ -202,6 +201,7 @@ class sceneObject
 			objPosition[1]+= newY;
 			objPosition[2]+= newZ;
 		}	
+};
 
 //	********************************
 //			Global Variables
@@ -222,7 +222,7 @@ float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1
 float cols[9][3] = {{0,0,0}, {1,1,1}, {1,0,0}, {1,0.64,0}, {1,1,0}, {0,1,0}, {0,0,1}, {1,0,1}};
 float baseColours[3][3] = {{1,0.85,0.73}, {1, 0.89, 0.71}, {1, 0.94, 0.84}};
 
-float eye[] = {100,75,100};
+float eye[3] = {100,75,100};
 
 double* m_start = new double[3];
 double* m_end = new double[3];
