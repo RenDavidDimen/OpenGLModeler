@@ -183,6 +183,12 @@ class sceneObject
 			    case 3:
 			    	glutSolidTeapot(objScale);
 			    	break;
+			    case 4:
+			    	glutSolidCone(0.5 * objScale, objScale, 50, 50);
+			    	break;
+			    // case 5:
+			    // 	glutSolidCylinder(0.5 * objScale, objScale, 50, 50);
+			    // 	break;
 			}
 
 			glPopMatrix();
@@ -233,6 +239,12 @@ int selectedObject = -1;
 
 sceneObject objectList[20];
 
+// Lighting
+float light_pos[] = {50, 100, 50, 1.0};
+float amb0[4] = {1,1,1,1};
+float diff0[4] = {0.5, 0, 0.5, 1}; // Shadows
+float spec0[4] = {1,1,1,1};
+
 /* drawPolygon - takes 4 indices and an array of vertices
  *   and draws a polygon using the vertices indexed by the indices
  */
@@ -247,7 +259,7 @@ void drawPolygon(int a, int b, int c, int d, float v[8][3]){
 
 void drawGrid()
 {
-	for (float i = -50; i<50; i = i +10)
+	for (float i = -50; i<=50; i = i +10)
 	{
 		if(i == 0)
 		{
@@ -272,13 +284,19 @@ void drawScene()
 {
 	float vert [7] [3] = {{-50,0,-50}, {50,0,-50}, {50,0,50}, {-50,0,50}, {-50,50,-50}, {50,50,-50}, {-50,50,50}};
 	
-	// Draws floor and backgrounds
-	glColor3fv(baseColours[0]);
-	drawPolygon(0, 1, 2, 3, vert);
-	glColor3fv(baseColours[1]);
-	drawPolygon(0, 4, 6, 3, vert);
-	glColor3fv(baseColours[2]);
-	drawPolygon(0, 4, 5, 1, vert);
+	// // Draws floor and backgrounds
+	// glColor3fv(baseColours[0]);
+	// drawPolygon(0, 1, 2, 3, vert);
+	// glColor3fv(baseColours[1]);
+	// drawPolygon(0, 4, 6, 3, vert);
+	// glColor3fv(baseColours[2]);
+	// drawPolygon(0, 4, 5, 1, vert);
+
+	/* LIGHTING */
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 
 	drawGrid();
 }
@@ -652,6 +670,12 @@ void display(void)
 	glLoadIdentity();
 	gluLookAt(eye[0], eye[1], eye[2], 0, 0, 0, 0, 1, 0);
 
+	/* LIGHTING */
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
+
 	drawObjects();
 	drawScene();
 
@@ -673,6 +697,11 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
 	glutMouseFunc(mouse);
+
+	// Lighting
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
 
