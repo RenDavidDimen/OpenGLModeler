@@ -194,6 +194,13 @@ class sceneObject
 			objPosition[0]+= newX;
 			objPosition[1]+= newY;
 			objPosition[2]+= newZ;
+		}
+
+		void rotate(float newX, float newY, float newZ)
+		{
+			objRotation[0]+= newX;
+			objRotation[1]+= newY;
+			objRotation[2]+= newZ;
 		}	
 };
 
@@ -353,7 +360,24 @@ void keyboard(unsigned char key, int x, int y)
 		case 'd':
 			objectList[selectedObject].move(1, 0, 0);
 			break;
-			
+		case 'z':
+			objectList[selectedObject].rotate(1, 0, 0);
+			break;
+		case 'x':
+			objectList[selectedObject].rotate(0, 1, 0);
+			break;
+		case 'c':
+			objectList[selectedObject].rotate(0, 0, 1);
+			break;
+		case 'Z':
+			objectList[selectedObject].rotate(-1, 0, 0);
+			break;
+		case 'X':
+			objectList[selectedObject].rotate(0, -1, 0);
+			break;
+		case 'C':
+			objectList[selectedObject].rotate(0, 0, -1);
+			break;
 	}
 	glutPostRedisplay();
 }
