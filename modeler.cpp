@@ -481,12 +481,11 @@ void menuProc(int value){
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 			glClear(GL_COLOR_BUFFER_BIT);
 			glutSwapBuffers();
-			glClear(GL_COLOR_BUFFER_BIT);
-			glutSwapBuffers();
+			drawScene();
 			printf("Canvas Cleared\n");
 			break;
 		case 1:
-			printf("Controls go here");
+			printf("Controls go here\n");
 			break;
 		case 2:
 			printf("Exiting Program\n");
@@ -497,19 +496,28 @@ void menuProc(int value){
 			// objectList[selectedObject].setMaterial();
 			break;
 		case 21:
-			printf("Set Shape: Cube\n");
 			objectList[selectedObject].setShape(1);
-			objectList[selectedObject].draw();
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+			drawObjects();
+			drawScene();
+			glutSwapBuffers();
 			break;
 		case 22:
-			printf("Set Shape: Sphere\n");
 			objectList[selectedObject].setShape(2);
-			objectList[selectedObject].draw();
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+			drawObjects();
+			drawScene();
+			glutSwapBuffers();
 			break;
 		case 23:
-			printf("Set Shape: Teapot\n");
 			objectList[selectedObject].setShape(3);
-			objectList[selectedObject].draw();
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+			drawObjects();
+			drawScene();
+			glutSwapBuffers();
 			break;
 	}
 }
