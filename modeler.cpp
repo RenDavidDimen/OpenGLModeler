@@ -308,6 +308,9 @@ void addObject(int newScale, int newShape){
 	}
 }
 
+// 	*********************************
+// 			Keyboard Controls
+// 	*********************************
 void keyboard(unsigned char key, int x, int y)
 {
 	int i = 0;
@@ -332,8 +335,8 @@ void keyboard(unsigned char key, int x, int y)
 			addObject(10, 3);
 			printf("Creating Teapot\n");
 			break;
+		// Remove Objects
 		case 'R':
-		case 'r':
 			for (int i = 0; i < maxShapesNum; i++){
 				if (objectList[i].getShape() > 0)
 				{
@@ -344,22 +347,34 @@ void keyboard(unsigned char key, int x, int y)
 			glClear(GL_COLOR_BUFFER_BIT);
 			printf("Clearing Objects\n");
 			break;
-		case 'W':
+		// Save Object List
+		case 'S':
+			printf("Saving Object List\n");
+			break;
+		// Load Object List
+		case 'L':
+			printf("Loading Object List\n");
+			break;
+		// Move Selected Object
 		case 'w':
 			objectList[selectedObject].move(0, 0, -1);
 			break;
-		case 'A':
 		case 'a':
 			objectList[selectedObject].move(-1, 0, 0);
 			break;
-		case 'S':
 		case 's':
 			objectList[selectedObject].move(0, 0, 1);
 			break;
-		case 'D':
 		case 'd':
 			objectList[selectedObject].move(1, 0, 0);
 			break;
+		case 'r':
+			objectList[selectedObject].move(0, 1, 0);
+			break;
+		case 'f':
+			objectList[selectedObject].move(0, -1, 0);
+			break;
+		// Rotate - Counter Clockwise
 		case 'z':
 			objectList[selectedObject].rotate(1, 0, 0);
 			break;
@@ -369,6 +384,8 @@ void keyboard(unsigned char key, int x, int y)
 		case 'c':
 			objectList[selectedObject].rotate(0, 0, 1);
 			break;
+		// Rotate - Clockwise about axis
+		// Works with Shift or Caps lock
 		case 'Z':
 			objectList[selectedObject].rotate(-1, 0, 0);
 			break;
