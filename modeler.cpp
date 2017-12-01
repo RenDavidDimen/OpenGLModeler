@@ -155,14 +155,18 @@ class sceneObject
 		{
 			float yPos = 0;
 
-			if(objPosition[1]-(0.5 * objScale) < 0)
+			if(objShape == 1 && objPosition[1]-(0.5 * objScale) < 0)
 			{
 				yPos = 0.5 * objScale;
 			}
-			else
+			else //if(objShape == 2 || objShape == 2 && objPosition[1] - objScale < 0)
 			{
-				yPos = objPosition[1];
+				yPos = objScale;
 			}
+			// else
+			// {
+			// 	yPos = objPosition[1];
+			// }
 
 			glPushMatrix();
 
@@ -191,12 +195,24 @@ class sceneObject
 
 			glPopMatrix();
 
-		}		
+		}
+
+		void move(float newX, float newY, float newZ)
+		{
+			objPosition[0]+= newX;
+			objPosition[1]+= newY;
+			objPosition[2]+= newZ;
+		}	
 };
 
 //	********************************
 //			Global Variables
 //	********************************
+
+// Lighting
+float amb0[4] = {1,1,1,1};
+float diff0[4] = {0.5, 0, 0.5, 1}; // Shadows
+float spec0[4] = {1,1,1,1};
 
 // Vertices
 float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1,0}, {1,0,0} };
@@ -216,6 +232,7 @@ float baseColours[3][3] = {{1,0.85,0.73}, {1, 0.89, 0.71}, {1, 0.94, 0.84}};
 float eye[] = {100,75,100};
 
 int maxShapesNum = 20;
+int selectedObject = -1;
 
 sceneObject objectList[20];
 
@@ -269,6 +286,20 @@ void drawScene()
 	drawGrid();
 }
 
+void drawObjectMaterial()
+{
+	// Lighting
+	float light_pos[] = {5.0, 50.0, 5.0, 1.0};
+	float amb0[4] = {1,1,1,1};
+	float diff0[4] = {0.5, 0, 0.5, 1}; // Shadows
+	float spec0[4] = {1,1,1,1};
+
+	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
+}
+
 void drawObjects()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -285,24 +316,10 @@ void addObject(int newScale, int newShape){
 	//Loop through object array and look for an empty slot
 	for (int i = 0; i < maxShapesNum; i++){
 		if (objectList[i].getShape() < 1){
-
-			printf("\n--------   Adding Object   --------\n");
-			printf("Object list number:\t%i\n", i);
-			printf("New Scale:\t\t%i\n", newScale);
-			printf("New Shape:\t\t%i\n", newShape);
-			printf("--------   Old Paramters   --------\n");
-			printf("Object Position:\t(%f, %f, %f)\n", objectList[i].getPosX(), objectList[i].getPosY(), objectList[i].getPosZ());
-			printf("Object Scale:\t\t%f\n", objectList[i].getScale());
-			printf("Object Shape:\t\t%i\n", objectList[i].getShape());
-
 			objectList[i].setPosition(0, 0, 0);
 			objectList[i].setScale(newScale);
 			objectList[i].setShape(newShape);
-
-			printf("-------- Set New Paramters --------\n");
-			printf("Object Position:\t(%f, %f, %f)\n", objectList[i].getPosX(), objectList[i].getPosY(), objectList[i].getPosZ());
-			printf("Object Scale:\t\t%f\n", objectList[i].getScale());
-			printf("Object Shape:\t\t%i\n", objectList[i].getShape());
+			selectedObject = i;
 			break;
 		}
 	}
@@ -331,6 +348,36 @@ void keyboard(unsigned char key, int x, int y)
 		case '3':
 			addObject(10, 3);
 			printf("Creating Teapot\n");
+			break;
+		case 'R':
+		case 'r':
+			for (int i = 0; i < maxShapesNum; i++){
+				if (objectList[i].getShape() > 0)
+				{
+					objectList[i].setShape(-1);
+				}
+			}
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			// drawScene();
+			printf("Clearing Objects\n");
+			break;
+		case 'W':
+		case 'w':
+			objectList[selectedObject].move(0, 0, -1);
+			break;
+		case 'A':
+		case 'a':
+			objectList[selectedObject].move(-1, 0, 0);
+			break;
+		case 'S':
+		case 's':
+			objectList[selectedObject].move(0, 0, 1);
+			break;
+		case 'D':
+		case 'd':
+			objectList[selectedObject].move(1, 0, 0);
 			break;
 			
 	}
@@ -404,7 +451,7 @@ void display(void)
 
 	drawObjects();
 	drawScene();
-	
+
 	glutSwapBuffers();
 }
 
@@ -413,16 +460,19 @@ int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);		//starts up GLUT
 	
+	// Initialize Windows
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	
 	glutInitWindowSize(800, 800);
 	glutInitWindowPosition(100, 100);
-
 	glutCreateWindow("Assignment 3 - Modeler");	//creates the window
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
+
+	// Lighting
+	// glEnable(GL_LIGHTING);
+	// glEnable(GL_LIGHT0);
 
 	glEnable(GL_DEPTH_TEST);
 
