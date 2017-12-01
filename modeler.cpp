@@ -209,11 +209,6 @@ class sceneObject
 //			Global Variables
 //	********************************
 
-// Lighting
-float amb0[4] = {1,1,1,1};
-float diff0[4] = {0.5, 0, 0.5, 1}; // Shadows
-float spec0[4] = {1,1,1,1};
-
 // Vertices
 float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1,0}, {1,0,0} };
 
@@ -286,20 +281,6 @@ void drawScene()
 	drawGrid();
 }
 
-void drawObjectMaterial()
-{
-	// Lighting
-	float light_pos[] = {5.0, 50.0, 5.0, 1.0};
-	float amb0[4] = {1,1,1,1};
-	float diff0[4] = {0.5, 0, 0.5, 1}; // Shadows
-	float spec0[4] = {1,1,1,1};
-
-	glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
-}
-
 void drawObjects()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -359,8 +340,6 @@ void keyboard(unsigned char key, int x, int y)
 			}
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 			glClear(GL_COLOR_BUFFER_BIT);
-
-			// drawScene();
 			printf("Clearing Objects\n");
 			break;
 		case 'W':
@@ -470,14 +449,10 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
 
-	// Lighting
-	// glEnable(GL_LIGHTING);
-	// glEnable(GL_LIGHT0);
-
 	glEnable(GL_DEPTH_TEST);
 
 	init();
-
+	
 	glutMainLoop();				//starts the event loop
 
 	return(0);					//return may not be necessary on all compilers
