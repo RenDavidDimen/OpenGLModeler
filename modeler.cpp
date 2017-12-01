@@ -625,7 +625,7 @@ int main(int argc, char** argv)
 	// Initialize Windows
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(800, 800);
-	glutInitWindowPosition(100, 100);
+	glutInitWindowPosition(10, 10);
 	glutCreateWindow("Assignment 3 - Modeler");	//creates the window
 
 	glutDisplayFunc(display);	//registers "display" as the display callback function
