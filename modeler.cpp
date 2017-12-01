@@ -478,6 +478,90 @@ void mouse(int btn, int state, int x, int y){
 		}
 	}
 }
+// ****************************
+//			Menu Items
+// ****************************
+void menuProc(int value){
+	switch(value) {
+		case 0:
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+			glutSwapBuffers();
+			glClear(GL_COLOR_BUFFER_BIT);
+			glutSwapBuffers();
+			printf("Canvas Cleared\n");
+			break;
+		case 1:
+			printf("Controls go here");
+			break;
+		case 2:
+			printf("Exiting Program\n");
+			exit(0);
+			break;
+		case 11:
+			printf("Set Colour: Red\n");
+			// objectList[selectedObject].setMaterial();
+			break;
+		case 21:
+			printf("Set Shape: Cube\n");
+			objectList[selectedObject].setShape(1);
+			objectList[selectedObject].draw();
+			break;
+		case 22:
+			printf("Set Shape: Sphere\n");
+			objectList[selectedObject].setShape(2);
+			objectList[selectedObject].draw();
+			break;
+		case 23:
+			printf("Set Shape: Teapot\n");
+			objectList[selectedObject].setShape(3);
+			objectList[selectedObject].draw();
+			break;
+	}
+}
+
+void mouseMenu(){
+	//int subMenu_id = glutCreateMenu(menuProc2);
+
+	// Shapes will be assigned as the following
+	// 2 - Red
+	// 3 - Orange
+	// 4 - Yellow
+	// 5 - Green
+	// 6 - Blue
+	// 7 - Purple
+	// 0 - Black
+	// 1 - White
+	int subMenu_colour = glutCreateMenu(menuProc);
+	glutAddMenuEntry("Red",		11);
+	glutAddMenuEntry("Orange",	12);
+	glutAddMenuEntry("Yellow",	13);
+	glutAddMenuEntry("Green",	14);
+	glutAddMenuEntry("Blue",	15);
+	glutAddMenuEntry("Purple",	16);
+	glutAddMenuEntry("White",	17);
+	glutAddMenuEntry("Black",	18);
+
+	// Shapes will be assigned as the following
+	// 1 - Cubes
+	// 2 - Spheres
+	// 3 - Teapots
+	int subMenu_shapes = glutCreateMenu(menuProc);
+	glutAddMenuEntry("Cube",		21);
+	glutAddMenuEntry("Sphere",		22);
+	glutAddMenuEntry("Teapot",	23);
+
+	// Main menu layout
+	int main_id = glutCreateMenu(menuProc);
+	glutAddSubMenu("Colour", subMenu_colour);
+	glutAddSubMenu("Change Shape", subMenu_shapes);
+	glutAddMenuEntry("Clear Canvas", 0);
+	glutAddMenuEntry("Help", 1);
+	glutAddMenuEntry("Quit", 2);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	drawObjects();
+}
+
 
 void init(void)
 {
@@ -550,6 +634,7 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 
 	init();
+	mouseMenu();
 	
 	glutMainLoop();				//starts the event loop
 
