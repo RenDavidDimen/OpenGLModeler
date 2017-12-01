@@ -15,30 +15,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <math.h>
 
-using namespace std;
-
-// Vertices
-float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1,0}, {1,0,0} };
-
-//	Colours
-// [0] Black
-// [1] White
-// [2] Red
-// [3] Orange
-// [4] Yellow
-// [5] Green
-// [6] Blue
-// [7] Purple
-float cols[9][3] = {{0,0,0}, {1,1,1}, {1,0,0}, {1,0.64,0}, {1,1,0}, {0,1,0}, {0,0,1}, {1,0,1}};
-float baseColours[3][3] = {{1,0.85,0.73}, {1, 0.89, 0.71}, {1, 0.94, 0.84}};
-
-float pos[] = {50,0,50};
-float rot[] = {0,0,0};
-float headRot[] = {0, 0, 0};
-
-float eye[] = {150,100,150};
-
+//	***************************
+//			Shape Class
+//	***************************
 class sceneObject
 {
 	private:
@@ -55,6 +36,7 @@ class sceneObject
 		int objMaterial;
 		
 		// 1: Cube 	2: Sphere  3: Teapot
+		// If shape is set to -1, class object is empty
 		int objShape;
 
 	public:
@@ -71,9 +53,9 @@ class sceneObject
 			objRotation[1] = 0;
 			objRotation[2] = 0;
 
-			objScale = 1;
+			objScale = 0;
 			objMaterial = 1;
-			objShape = 1;
+			objShape = -1;
 		}
 
 		// 	********************************
@@ -81,19 +63,19 @@ class sceneObject
 		// 	********************************
 
 		// Update Position
-		void setPosition(float newPosition[3])
+		void setPosition(float newX, float newY, float newZ)
 		{
-			objPosition[0] = newPosition[0];
-			objPosition[1] = newPosition[1];
-			objPosition[2] = newPosition[2];
+			objPosition[0] = newX;
+			objPosition[1] = newY;
+			objPosition[2] = newZ;
 		}
 
 		// Update Rotation
-		void setRotation(float newRotation[3])
+		void setRotation(float newRotX, float newRotY, float newRotZ)
 		{
-			objRotation[0] = newRotation[0];
-			objRotation[1] = newRotation[1];
-			objRotation[2] = newRotation[2];
+			objRotation[0] = newRotX;
+			objRotation[1] = newRotY;
+			objRotation[2] = newRotZ;
 		}
 
 		// Update Scale
@@ -173,10 +155,21 @@ class sceneObject
 
 		void draw()
 		{
+			float yPos = 0;
+
+			if(objShape == 1 && objPosition[1]-(0.5 * objScale) < 0)
+			{
+				yPos = 0.5 * objScale;
+			}
+			else
+			{
+				yPos = objScale;
+			}
+
 			glPushMatrix();
 
 			// Position
-			glTranslatef(objPosition[0], objPosition[1], objPosition[2]);
+			glTranslatef(objPosition[0], yPos, objPosition[2]);
 			
 			// Rotation
 			glRotatef(objRotation[0], 1, 0, 0);
@@ -200,8 +193,43 @@ class sceneObject
 
 			glPopMatrix();
 
-		}		
+		}
+
+		void move(float newX, float newY, float newZ){
+			objPosition[0] += newX;
+			objPosition[1] += newY;
+			objPosition[2] += newZ;
+		}
 };
+
+//	********************************
+//			Global Variables
+//	********************************
+
+// Vertices
+float verts[8][3] = { {0,0,1}, {0,1,1}, {1,1,1}, {1,0,1}, {0,0,0}, {0,1,0}, {1,1,0}, {1,0,0} };
+
+//	Colours
+// [0] Black
+// [1] White
+// [2] Red
+// [3] Orange
+// [4] Yellow
+// [5] Green
+// [6] Blue
+// [7] Purple
+float cols[9][3] = {{0,0,0}, {1,1,1}, {1,0,0}, {1,0.64,0}, {1,1,0}, {0,1,0}, {0,0,1}, {1,0,1}};
+float baseColours[3][3] = {{1,0.85,0.73}, {1, 0.89, 0.71}, {1, 0.94, 0.84}};
+
+float eye[] = {100,75,100};
+
+double* m_start = new double[3];
+double* m_end = new double[3];
+
+int maxShapesNum = 20;
+int selectedObject = -1;
+
+sceneObject objectList[20];
 
 /* drawPolygon - takes 4 indices and an array of vertices
  *   and draws a polygon using the vertices indexed by the indices
@@ -217,24 +245,30 @@ void drawPolygon(int a, int b, int c, int d, float v[8][3]){
 
 void drawGrid()
 {
-	for (float i = 0; i<100; i = i +10)
+	for (float i = -50; i<50; i = i +10)
 	{
-		glColor3fv(cols[1]);
-		glLineWidth(2);
+		if(i == 0)
+		{
+			glColor3fv(cols[0]);
+		}
+		else{
+			glColor3fv(cols[1]);
+		}
+		glLineWidth(3);
 		glBegin(GL_LINES);
 			// x-axis markers
-			glVertex3f(i, 0, 0);
-			glVertex3f(i, 0, 100);
+			glVertex3f(i, 0, -50);
+			glVertex3f(i, 0, 50);
 			// z-axis markers
-			glVertex3f(0, 0, i);
-			glVertex3f(100, 0, i);
+			glVertex3f(-50, 0, i);
+			glVertex3f(50, 0, i);
 		glEnd();
 	}
 }
 
 void drawScene()
 {
-	float vert [7] [3] = {{0,0,0}, {100,0,0}, {100,0,100}, {0,0,100}, {0,50,0}, {100,50,0}, {0,50,100}};
+	float vert [7] [3] = {{-50,0,-50}, {50,0,-50}, {50,0,50}, {-50,0,50}, {-50,50,-50}, {50,50,-50}, {-50,50,50}};
 	
 	// Draws floor and backgrounds
 	glColor3fv(baseColours[0]);
@@ -245,6 +279,49 @@ void drawScene()
 	drawPolygon(0, 4, 5, 1, vert);
 
 	drawGrid();
+}
+
+void drawObjectMaterial(){
+
+}
+
+void drawObjects()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	for (int i = 0; i < maxShapesNum; i++){
+		if (objectList[i].getShape() > 0) {
+			objectList[i].draw();
+		}
+	}
+
+}
+
+void addObject(int newScale, int newShape){
+	//Loop through object array and look for an empty slot
+	for (int i = 0; i < maxShapesNum; i++){
+		if (objectList[i].getShape() < 1){
+
+			printf("\n--------   Adding Object   --------\n");
+			printf("Object list number:\t%i\n", i);
+			printf("New Scale:\t\t%i\n", newScale);
+			printf("New Shape:\t\t%i\n", newShape);
+			printf("--------   Old Paramters   --------\n");
+			printf("Object Position:\t(%f, %f, %f)\n", objectList[i].getPosX(), objectList[i].getPosY(), objectList[i].getPosZ());
+			printf("Object Scale:\t\t%f\n", objectList[i].getScale());
+			printf("Object Shape:\t\t%i\n", objectList[i].getShape());
+
+			objectList[i].setPosition(0, 0, 0);
+			objectList[i].setScale(newScale);
+			objectList[i].setShape(newShape);
+
+			printf("-------- Set New Paramters --------\n");
+			printf("Object Position:\t(%f, %f, %f)\n", objectList[i].getPosX(), objectList[i].getPosY(), objectList[i].getPosZ());
+			printf("Object Scale:\t\t%f\n", objectList[i].getScale());
+			printf("Object Shape:\t\t%i\n", objectList[i].getShape());
+			break;
+		}
+	}
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -260,13 +337,47 @@ void keyboard(unsigned char key, int x, int y)
 			exit (0);
 			break;
 		case '1':
+			addObject(10, 1);
 			printf("Creating Cube\n");
 			break;
 		case '2':
+			addObject(10, 2);
 			printf("Creating Sphere\n");
 			break;
 		case '3':
+			addObject(10, 3);
 			printf("Creating Teapot\n");
+			break;
+		case 'R':
+		case 'r':
+			for (int i = 0; i < maxShapesNum; i++){
+				if (objectList[i].getShape() > 0)
+				{
+					objectList[i].setShape(-1);
+				}
+			}
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			// drawScene();
+			printf("Clearing Objects\n");
+			break;
+		case 'W':
+		case 'w':
+			objectList[selectedObject].move(0, 0, -1);
+			printf("%i\n", selectedObject);
+			break;
+		case 'A':
+		case 'a':
+			objectList[selectedObject].move(-1, 0, 0);
+			break;
+		case 'S':
+		case 's':
+			objectList[selectedObject].move(0, 0, 1);
+			break;
+		case 'D':
+		case 'd':
+			objectList[selectedObject].move(1, 0, 0);
 			break;
 			
 	}
@@ -300,6 +411,94 @@ void special(int key, int x, int y)
 	glutPostRedisplay();
 }
 
+void mouse(int btn, int state, int x, int y){
+	if(btn == GLUT_LEFT_BUTTON){
+		if(state == GLUT_DOWN){
+			printf("clicking\n");
+			printf("(%f,%f,%f)----(%f,%f,%f)\n", m_start[0], m_start[1], m_start[2], m_end[0], m_end[1], m_end[2]);
+
+			double matModelView[16], matProjection[16];
+			int viewport[4];
+
+			glGetDoublev(GL_MODELVIEW_MATRIX, matModelView);
+			glGetDoublev(GL_PROJECTION_MATRIX, matProjection);
+			glGetIntegerv(GL_VIEWPORT, viewport);
+
+			double winX = (double)x;
+			double winY = viewport[3] - (double)y;
+
+			gluUnProject(winX, winY, 0.0, matModelView, matProjection, viewport, &m_start[0], &m_start[1],  &m_start[2]);
+			gluUnProject(winX, winY, 160.0, matModelView, matProjection, viewport, &m_end[0], &m_end[1],  &m_end[2]);
+			
+			printf("(%f,%f,%f)----(%f,%f,%f)\n\n", m_start[0], m_start[1], m_start[2], m_end[0], m_end[1], m_end[2]);
+
+			//------------------------------------------
+
+			double* R0 = new double[3];
+			double* Rd = new double[3];
+
+			double xDiff = m_end[0] - m_start[0];
+			double yDiff = m_end[1] - m_start[1];
+			double zDiff = m_end[2] - m_start[2];
+
+			double mag = sqrt(xDiff*xDiff + yDiff*yDiff + zDiff*zDiff);
+			R0[0] = m_start[0];
+			R0[1] = m_start[1];
+			R0[2] = m_start[2];
+
+			Rd[0] = xDiff / mag;
+			Rd[1] = yDiff / mag;
+			Rd[2] = zDiff / mag;
+
+			double A = Rd[0] * Rd[0] + Rd[1] * Rd[1] + Rd[2] * Rd[2];
+
+			double* R0Pc = new double[3];
+
+			for(int i = 0; i < 20; i++){
+				if(objectList[i].getShape() != -1){
+					R0Pc[0] = R0[0] - objectList[i].getPosX();
+					R0Pc[1] = R0[1] - objectList[i].getPosY();
+					R0Pc[2] = R0[2] - objectList[i].getPosZ();
+
+					double B = 2 * ( R0Pc[0] * Rd[0] + R0Pc[1] * Rd[1] + R0Pc[2] * Rd[2]);
+					double C = (R0Pc[0]*R0Pc[0] + R0Pc[1] * R0Pc[1] + R0Pc[2] * R0Pc[2]) - (objectList[i].getScale() * objectList[i].getScale());
+
+					double discriminent = B*B - 4* A *C;
+
+					if(discriminent < 0)
+						printf("no intersection!\n");
+					else{
+						double t1 = (-B + sqrt(discriminent)) / (2*A);
+						double t2 = (-B - sqrt(discriminent)) / (2*A);
+
+						selectedObject = i;
+
+						printf("Intersection with object %i at t= %f, %f\n", i, t1, t2);
+					}
+				}
+			}
+
+			/*R0Pc[0] = R0[0] - pos[0];
+			R0Pc[1] = R0[1] - pos[1];
+			R0Pc[2] = R0[2] - pos[2];
+
+			double B = 2 * ( R0Pc[0] * Rd[0] + R0Pc[1] * Rd[1] + R0Pc[2] * Rd[2]);
+			double C = (R0Pc[0]*R0Pc[0] + R0Pc[1] * R0Pc[1] + R0Pc[2] * R0Pc[2]) - (20 * 20);
+
+			double discriminent = B*B - 4* A *C;
+
+			if( discriminent < 0)
+				printf("no intersection!\n");
+			else{
+				double t1 = (-B + sqrt(discriminent)) / (2*A);
+				double t2 = (-B - sqrt(discriminent)) / (2*A);
+
+				printf("Intersection at t= %f, %f\n", t1, t2);
+			}*/
+		}
+	}
+}
+
 void init(void)
 {
 	glClearColor(0, 0, 0, 0);
@@ -316,81 +515,16 @@ void init(void)
      ************************************************************************/
 	//TUTORIAL: Added from code snippet 1 from tutorial pdf
 	glMatrixMode(GL_PROJECTION);
-	gluPerspective(45, 1, 1, 300); 
-}
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 300);
 
-void DrawSnowman(float* pos, float* rot)
-{
-	glPushMatrix();
+	m_start[0] = 0;
+	m_start[1] = 0;
+	m_start[2] = 0;
 
-	glTranslatef(pos[0], pos[1], pos[2]);
-	glRotatef(rot[1], 0, 1, 0);
-
-	//draw body
-	glColor3f(1,1,1);
-	glutSolidSphere(1, 16, 16);
-
-	//draw buttons
-	glPushMatrix();
-	glTranslatef(0, 0.35, 0.9);
-	glColor3f(0, 0, 0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, 0.15, 0.95);
-	glColor3f(0, 0, 0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(0, -0.05, 0.95);
-	glColor3f(0, 0, 0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
-
-
-	glPushMatrix();
-	//translate relative to body, and draw head
-	glTranslatef(0, 1.25, 0);
-	glRotatef(headRot[1], 0, 1, 0); //turn the head relative to the body
-	glColor3f(1,1,1);
-	glutSolidSphere(0.5, 16, 16);
-	
-	//translate and draw right eye
-	glPushMatrix();
-	glTranslatef(0.2, 0.15, 0.45);
-	glColor3f(0,0,0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
-
-	//translate and draw left eye
-	glPushMatrix();
-	glTranslatef(-0.2, 0.15, 0.45);
-	glColor3f(0,0,0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
-
-	//translate and draw nose
-	glPushMatrix();
-	glTranslatef(0, 0, 0.5);
-	glColor3f(1,0.4,0);
-	glutSolidSphere(0.1, 10, 10);
-	glPopMatrix();
-
-	glPopMatrix();//body
-	glPopMatrix();//snowman
-}
-
-void initializeObjectList(sceneObject object[])
-{
-	// Intialize Stucture Array
-	// for(int i = 0; i <10; i++)
-	// {
-	// 	object[i].objShape = 0;
-	// 	printf("Object Shape [%i]: %i\n", i,  object[i].objShape);
-	// }
-	// printf(object);
+	m_end[0] = 0;
+	m_end[1] = 0;
+	m_end[2] = 0;
 }
 
 /* display function - GLUT display callback function
@@ -412,12 +546,8 @@ void display(void)
 	glLoadIdentity();
 	gluLookAt(eye[0], eye[1], eye[2], 0, 0, 0, 0, 1, 0);
 
+	drawObjects();
 	drawScene();
-	sceneObject objectList[10];
-
-	initializeObjectList(objectList);
-
-	DrawSnowman(pos, rot);
 	
 	glutSwapBuffers();
 }
@@ -437,6 +567,7 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);	//registers "display" as the display callback function
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(special);
+	glutMouseFunc(mouse);
 
 	glEnable(GL_DEPTH_TEST);
 
