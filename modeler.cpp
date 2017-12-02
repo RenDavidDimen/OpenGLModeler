@@ -186,9 +186,9 @@ class sceneObject
 			    case 4:
 			    	glutSolidCone(0.5 * objScale, objScale, 50, 50);
 			    	break;
-			    // case 5:
-			    // 	glutSolidCylinder(0.5 * objScale, objScale, 50, 50);
-			    // 	break;
+			    case 5:
+			    	glutSolidTorus(0.5 * objScale, objScale, 50, 50);
+			    	break;
 			}
 
 			glPopMatrix();
@@ -242,7 +242,7 @@ sceneObject objectList[20];
 // Lighting
 float light_pos[] = {50, 100, 50, 1.0};
 float amb0[4] = {1,1,1,1};
-float diff0[4] = {0.5, 0, 0.5, 1}; // Shadows
+float diff0[4] = {0.5, 0.5, 0.5, 1}; // Shadows
 float spec0[4] = {1,1,1,1};
 
 /* drawPolygon - takes 4 indices and an array of vertices
@@ -284,6 +284,12 @@ void drawScene()
 {
 	float vert [7] [3] = {{-50,0,-50}, {50,0,-50}, {50,0,50}, {-50,0,50}, {-50,50,-50}, {50,50,-50}, {-50,50,50}};
 	
+	/* LIGHTING */
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
+
 	// // Draws floor and backgrounds
 	// glColor3fv(baseColours[0]);
 	// drawPolygon(0, 1, 2, 3, vert);
@@ -291,12 +297,6 @@ void drawScene()
 	// drawPolygon(0, 4, 6, 3, vert);
 	// glColor3fv(baseColours[2]);
 	// drawPolygon(0, 4, 5, 1, vert);
-
-	/* LIGHTING */
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
 
 	drawGrid();
 }
@@ -352,6 +352,14 @@ void keyboard(unsigned char key, int x, int y)
 		case '3':
 			addObject(10, 3);
 			printf("Creating Teapot\n");
+			break;
+		case '4':
+			addObject(10, 4);
+			printf("Creating Cone\n");
+			break;
+		case '5':
+			addObject(10, 5);
+			printf("Creating Cone\n");
 			break;
 		// Remove Objects
 		case 'R':
