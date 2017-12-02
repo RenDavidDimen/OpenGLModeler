@@ -523,13 +523,6 @@ void mouse(int btn, int state, int x, int y){
 // ****************************
 void menuProc(int value){
 	switch(value) {
-		case 0:
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
-			glClear(GL_COLOR_BUFFER_BIT);
-			glutSwapBuffers();
-			drawScene();
-			printf("Canvas Cleared\n");
-			break;
 		case 1:
 			printf("Controls go here\n");
 			break;
@@ -603,7 +596,6 @@ void mouseMenu(){
 	int main_id = glutCreateMenu(menuProc);
 	glutAddSubMenu("Colour", subMenu_colour);
 	glutAddSubMenu("Change Shape", subMenu_shapes);
-	glutAddMenuEntry("Clear Canvas", 0);
 	glutAddMenuEntry("Help", 1);
 	glutAddMenuEntry("Quit", 2);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
