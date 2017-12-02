@@ -280,27 +280,6 @@ void drawGrid()
 	}
 }
 
-void drawScene()
-{
-	float vert [7] [3] = {{-50,0,-50}, {50,0,-50}, {50,0,50}, {-50,0,50}, {-50,50,-50}, {50,50,-50}, {-50,50,50}};
-	
-	/* LIGHTING */
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
-
-	// // Draws floor and backgrounds
-	// glColor3fv(baseColours[0]);
-	// drawPolygon(0, 1, 2, 3, vert);
-	// glColor3fv(baseColours[1]);
-	// drawPolygon(0, 4, 6, 3, vert);
-	// glColor3fv(baseColours[2]);
-	// drawPolygon(0, 4, 5, 1, vert);
-
-	drawGrid();
-}
-
 void drawObjects()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
