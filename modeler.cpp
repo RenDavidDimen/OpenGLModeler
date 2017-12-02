@@ -251,6 +251,37 @@ float amb1[4] = {1,1,1,1};
 float diff1[4] = {0.5, 0.5, 0.5, 1}; // Shadows
 float spec1[4] = {1,1,1,1};
 
+// Material
+float m_amb[] = {0.1745, 0.01175, 0.01175, 1.0};
+float m_diff[] = {0.61424, 0.04136, 0.04136, 1.0};
+float m_spec[] = {0.727811, 0.626959, 0.626959, 1.0};
+float shiny = 25;
+
+void printControls(){
+	printf("\n**************************************\n");
+	printf("Controls:\n");
+	printf("q - quit the program\n");
+	printf("R - reset the scene (remove all objects from canvas)\n");
+	printf("Arrow Keys - move camera\n");
+	printf("Num Keys 1,2,3,4,5 - change material\n");
+	printf("Num Key 6 - Create Cube\n");
+	printf("Num Key 7 - Create Sphere\n");
+	printf("Num Key 8 - Create Teapot\n");
+	printf("Num Key 9 - Create Cone\n");
+	printf("Num Key 0 - Create Tube\n");
+	printf("\n");
+	printf("After an object has been created click on it to use the following commands\n");
+	printf("a,d - move object along x axis\n");
+	printf("r,f - move object along y axis\n");
+	printf("w,a - move object along z axis\n");
+	printf("z,Z - rotate object along x axis\n");
+	printf("x,X - rotate object along y axis\n");
+	printf("c,C - rotate object along z axis\n");
+	printf("\n");
+	printf("Right click the screen for menu options");
+	printf("\n**************************************\n");
+}
+
 //	************************
 //			Lighting
 //	************************
@@ -363,6 +394,91 @@ void addObject(int newScale, int newShape){
 	}
 }
 
+void changeMaterial1(){
+	float new_amb[] = {0.0215, 0.1745, 0.0215, 1.0};
+	float new_diff[] = {0.07568, 0.61424, 0.07568, 1.0};
+	float new_spec[] = {0.633, 0.727811, 0.633, 1.0};
+	shiny = 6;
+
+	m_amb[0] = new_amb[0];
+	m_amb[1] = new_amb[1];
+	m_amb[2] = new_amb[2];
+	m_diff[0] = new_diff[0];
+	m_diff[1] = new_diff[1];
+	m_diff[2] = new_diff[2];
+	m_spec[0] = new_spec[0];
+	m_spec[1] = new_spec[1];
+	m_spec[2] = new_spec[2];
+}
+
+void changeMaterial2(){
+	float new_amb[] = {0.25, 0.20725, 0.20725, 1.0};
+	float new_diff[] = {0.829, 0.829, 0.296648, 1.0};
+	float new_spec[] = {0.296648, 0.296648, 0.296648, 1.0};
+	shiny = 0.8;
+
+	m_amb[0] = new_amb[0];
+	m_amb[1] = new_amb[1];
+	m_amb[2] = new_amb[2];
+	m_diff[0] = new_diff[0];
+	m_diff[1] = new_diff[1];
+	m_diff[2] = new_diff[2];
+	m_spec[0] = new_spec[0];
+	m_spec[1] = new_spec[1];
+	m_spec[2] = new_spec[2];
+}
+
+void changeMaterial3(){
+	float new_amb[] = {0.24725, 0.1995, 0.0745, 1.0};
+	float new_diff[] = {0.75164, 0.60648, 0.22648, 1.0};
+	float new_spec[] = {0.628281, 0.555802, 0.366065, 1.0};
+	shiny = 4;
+
+	m_amb[0] = new_amb[0];
+	m_amb[1] = new_amb[1];
+	m_amb[2] = new_amb[2];
+	m_diff[0] = new_diff[0];
+	m_diff[1] = new_diff[1];
+	m_diff[2] = new_diff[2];
+	m_spec[0] = new_spec[0];
+	m_spec[1] = new_spec[1];
+	m_spec[2] = new_spec[2];
+}
+
+void changeMaterial4(){
+	float new_amb[] = {0.1, 0.18725, 0.1745, 1.0};
+	float new_diff[] = {0.396, 0.74151, 0.69102, 1.0};
+	float new_spec[] = {0.297254, 0.30829, 0.306678, 1.0};
+	shiny = 1;
+
+	m_amb[0] = new_amb[0];
+	m_amb[1] = new_amb[1];
+	m_amb[2] = new_amb[2];
+	m_diff[0] = new_diff[0];
+	m_diff[1] = new_diff[1];
+	m_diff[2] = new_diff[2];
+	m_spec[0] = new_spec[0];
+	m_spec[1] = new_spec[1];
+	m_spec[2] = new_spec[2];
+}
+
+void changeMaterial5(){
+	float new_amb[] = {0.1745, 0.01175, 0.01175, 1.0};
+	float new_diff[] = {0.61424, 0.04136, 0.04136, 1.0};
+	float new_spec[] = {0.727811, 0.626959, 0.626959, 1.0};
+	shiny = 25;
+
+	m_amb[0] = new_amb[0];
+	m_amb[1] = new_amb[1];
+	m_amb[2] = new_amb[2];
+	m_diff[0] = new_diff[0];
+	m_diff[1] = new_diff[1];
+	m_diff[2] = new_diff[2];
+	m_spec[0] = new_spec[0];
+	m_spec[1] = new_spec[1];
+	m_spec[2] = new_spec[2];
+}
+
 // 	*********************************
 // 			Keyboard Controls
 // 	*********************************
@@ -378,25 +494,45 @@ void keyboard(unsigned char key, int x, int y)
 		case 27:
 			exit (0);
 			break;
-		case '1':
+		case '6':
 			addObject(10, 1);
 			printf("Creating Cube\n");
 			break;
-		case '2':
+		case '7':
 			addObject(10, 2);
 			printf("Creating Sphere\n");
 			break;
-		case '3':
+		case '8':
 			addObject(10, 3);
 			printf("Creating Teapot\n");
 			break;
-		case '4':
+		case '9':
 			addObject(10, 4);
 			printf("Creating Cone\n");
 			break;
-		case '5':
+		case '0':
 			addObject(10, 5);
-			printf("Creating Cone\n");
+			printf("Creating Tube\n");
+			break;
+		case '1':
+			changeMaterial1();
+			printf("Changing to Material 1\n");
+			break;
+		case '2':
+			changeMaterial2();
+			printf("Changing to Material 2\n");
+			break;
+		case '3':
+			changeMaterial3();
+			printf("Changing to Material 3\n");
+			break;
+		case '4':
+			changeMaterial4();
+			printf("Changing to Material 4\n");
+			break;
+		case '5':
+			changeMaterial5();
+			printf("Changing to Material 5\n");
 			break;
 		// Remove Objects
 		case 'R':
@@ -608,15 +744,26 @@ void mouse(int btn, int state, int x, int y){
 void menuProc(int value){
 	switch(value) {
 		case 1:
-			printf("Controls go here\n");
+			printControls();
 			break;
 		case 2:
 			printf("Exiting Program\n");
 			exit(0);
 			break;
 		case 11:
-			printf("Set Colour: Red\n");
-			// objectList[selectedObject].setMaterial();
+			changeMaterial1();
+			break;
+		case 12:
+			changeMaterial2();
+			break;
+		case 13:
+			changeMaterial3();
+			break;
+		case 14:
+			changeMaterial4();
+			break;
+		case 15:
+			changeMaterial5();
 			break;
 		case 21:
 			objectList[selectedObject].setShape(1);
@@ -624,6 +771,7 @@ void menuProc(int value){
 			glClear(GL_COLOR_BUFFER_BIT);
 			drawObjects();
 			drawGrid();
+
 			glutSwapBuffers();
 			break;
 		case 22:
@@ -631,7 +779,9 @@ void menuProc(int value){
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 			glClear(GL_COLOR_BUFFER_BIT);
 			drawObjects();
+
 			drawGrid();
+
 			glutSwapBuffers();
 			break;
 		case 23:
@@ -674,14 +824,11 @@ void mouseMenu(){
 	// 0 - Black
 	// 1 - White
 	int subMenu_colour = glutCreateMenu(menuProc);
-	glutAddMenuEntry("Red",		11);
-	glutAddMenuEntry("Orange",	12);
-	glutAddMenuEntry("Yellow",	13);
-	glutAddMenuEntry("Green",	14);
-	glutAddMenuEntry("Blue",	15);
-	glutAddMenuEntry("Purple",	16);
-	glutAddMenuEntry("White",	17);
-	glutAddMenuEntry("Black",	18);
+	glutAddMenuEntry("Green",	11);
+	glutAddMenuEntry("Beige",	12);
+	glutAddMenuEntry("Gold",	13);
+	glutAddMenuEntry("Turquoise",	14);
+	glutAddMenuEntry("Ruby",	15);
 
 	// Shapes will be assigned as the following
 	// 1 - Cubes
@@ -729,6 +876,9 @@ void init(void)
 	m_end[0] = 0;
 	m_end[1] = 0;
 	m_end[2] = 0;
+
+	printControls();
+
 }
 /* display function - GLUT display callback function
  *		clears the screen, sets the camera position, draws the ground plane and movable box
@@ -750,6 +900,11 @@ void display(void)
 	gluLookAt(eye[0], eye[1], eye[2], 0, 0, 0, 0, 1, 0);
 
 	lighting();
+
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m_amb);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  m_diff);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  m_spec);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS,  shiny);
 	
 	drawObjects();
 	drawGrid();
@@ -776,7 +931,8 @@ int main(int argc, char** argv)
 	// Lighting
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHT1);
+	// glEnable(GL_LIGHT1);
+
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
