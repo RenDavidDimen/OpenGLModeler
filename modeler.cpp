@@ -236,14 +236,70 @@ double* m_end = new double[3];
 
 int maxShapesNum = 20;
 int selectedObject = -1;
+int selectedLight = 0;
 
 sceneObject objectList[20];
 
 // Lighting
-float light_pos[] = {50, 100, 50, 1.0};
+float light_pos0[] = {0, 50, 0, 1.0};
 float amb0[4] = {1,1,1,1};
 float diff0[4] = {0.5, 0.5, 0.5, 1}; // Shadows
 float spec0[4] = {1,1,1,1};
+
+float light_pos1[] = {-50, 50, -50, 1.0};
+float amb1[4] = {1,1,1,1};
+float diff1[4] = {0.5, 0.5, 0.5, 1}; // Shadows
+float spec1[4] = {1,1,1,1};
+
+//	************************
+//			Lighting
+//	************************
+
+void lighting()
+{
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos0);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
+
+    glLightfv(GL_LIGHT1, GL_POSITION, light_pos1);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, amb1);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diff1);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, spec1);
+}
+
+void drawLightSphere()
+{
+	glPushMatrix();
+		glTranslatef(light_pos0[0], light_pos0[1], light_pos0[2]);
+		glColor3f(1.0, 1.0, 0);
+    	glutSolidSphere(2, 50, 50); //radius,slices,stacks
+	glPopMatrix();
+	glFlush();
+
+	glPushMatrix();
+		glTranslatef(light_pos1[0], light_pos1[1], light_pos1[2]);
+		glColor3f(1.0, 1.0, 1.0);
+    	glutSolidSphere(2, 50, 50); //radius,slices,stacks
+	glPopMatrix();
+	glFlush();
+}
+
+void moveLight(float x, float y, float z)
+{
+	if(selectedLight == 0)
+	{
+		light_pos0[0] += x;
+		light_pos0[1] += y;
+		light_pos0[2] += z;	
+	}
+	else
+	{
+		light_pos1[0] += x;
+		light_pos1[1] += y;
+		light_pos1[2] += z;
+	}
+}
 
 /* drawPolygon - takes 4 indices and an array of vertices
  *   and draws a polygon using the vertices indexed by the indices
@@ -289,6 +345,8 @@ void drawObjects()
 			objectList[i].draw();
 		}
 	}
+
+	drawLightSphere();
 
 }
 
@@ -399,6 +457,32 @@ void keyboard(unsigned char key, int x, int y)
 			break;
 		case 'C':
 			objectList[selectedObject].rotate(0, 0, -1);
+			break;
+		// Move Lighting
+		case 'i':
+			moveLight(0, 0, -1);
+			break;
+		case 'j':
+			moveLight(-1, 0, 0);
+			break;
+		case 'k':
+			moveLight(0, 0, 1);
+			break;
+		case 'l':
+			moveLight(1, 0, 0);
+			break;
+		case 'p':
+			moveLight(0, 1, 0);
+			break;
+		case ';':
+			moveLight(0, -1, 0);
+			break;
+		// Select Light to Control
+		case '[':
+			selectedLight = 0;
+			break;
+		case ']':
+			selectedLight = 1;
 			break;
 	}
 	glutPostRedisplay();
@@ -539,7 +623,7 @@ void menuProc(int value){
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 			glClear(GL_COLOR_BUFFER_BIT);
 			drawObjects();
-			drawScene();
+			drawGrid();
 			glutSwapBuffers();
 			break;
 		case 22:
@@ -547,7 +631,7 @@ void menuProc(int value){
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 			glClear(GL_COLOR_BUFFER_BIT);
 			drawObjects();
-			drawScene();
+			drawGrid();
 			glutSwapBuffers();
 			break;
 		case 23:
@@ -555,7 +639,23 @@ void menuProc(int value){
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
 			glClear(GL_COLOR_BUFFER_BIT);
 			drawObjects();
-			drawScene();
+			drawGrid();
+			glutSwapBuffers();
+			break;
+		case 24:
+			objectList[selectedObject].setShape(4);
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+			drawObjects();
+			drawGrid();
+			glutSwapBuffers();
+			break;
+		case 25:
+			objectList[selectedObject].setShape(5);
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f );
+			glClear(GL_COLOR_BUFFER_BIT);
+			drawObjects();
+			drawGrid();
 			glutSwapBuffers();
 			break;
 	}
@@ -649,14 +749,10 @@ void display(void)
 	glLoadIdentity();
 	gluLookAt(eye[0], eye[1], eye[2], 0, 0, 0, 0, 1, 0);
 
-	/* LIGHTING */
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, amb0);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diff0);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, spec0);
-
+	lighting();
+	
 	drawObjects();
-	drawScene();
+	drawGrid();
 
 	glutSwapBuffers();
 }
@@ -680,6 +776,7 @@ int main(int argc, char** argv)
 	// Lighting
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 	glShadeModel(GL_SMOOTH);
 
 	glEnable(GL_DEPTH_TEST);
