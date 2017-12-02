@@ -278,6 +278,12 @@ void printControls(){
 	printf("x,X - rotate object along y axis\n");
 	printf("c,C - rotate object along z axis\n");
 	printf("\n");
+	printf("Controls for Lights\n");
+	printf("j,l - move light along x axis");
+	printf("p,; - move light along y axis\n");
+	printf("i,k - move light along z axis\n");
+	printf("[,] - toggle between 2 light sources\n");
+	printf("\n");
 	printf("Right click the screen for menu options");
 	printf("\n**************************************\n");
 }

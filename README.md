@@ -24,4 +24,9 @@ z,Z - rotate object along x axis
 x,X - rotate object along y axis
 c,C - rotate object along z axis
 
+Controls for Lights
+j,l - move light along x axis
+p,; - move light along y axis
+i,k - move light along z axis
+[,] - toggle between 2 light sources
 Right click the screen for menu options
